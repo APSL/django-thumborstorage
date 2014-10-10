@@ -4,11 +4,13 @@ import re
 import requests
 from libthumbor import CryptoURL
 from requests.packages.urllib3.exceptions import LocationParseError
-from StringIO import StringIO
+from io import BytesIO
 from django.conf import settings
 from django.core.files.images import ImageFile
 from django.core.files.storage import Storage, FileSystemStorage
+from django.utils.deconstruct import deconstructible
 from . import exceptions
+
 
 
 class ThumborStorageFile(ImageFile):
@@ -44,7 +46,7 @@ class ThumborStorageFile(ImageFile):
 
     def _get_file(self):
         if self._file is None:
-            self._file = StringIO()
+            self._file = BytesIO()
             if 'r' in self._mode:
                 url = "%s%s" % (settings.THUMBOR_RW_SERVER, self.name)
                 response = requests.get(url)
@@ -63,6 +65,7 @@ class ThumborStorageFile(ImageFile):
         return self.tell()
 
 
+@deconstructible
 class ThumborStorage(Storage):
     """Thumbor Simple Storage Service"""
 
