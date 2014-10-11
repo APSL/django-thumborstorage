@@ -20,7 +20,7 @@ class MockedGetResponse:
         if not os.path.exists(filename):
             self.status_code = 404
         else:
-            self.content = open(filename, "r").read()
+            self.content = open(filename, "rb").read()
 
 
 def mocked_thumbor_get_response(url):
@@ -116,7 +116,7 @@ class ThumborStorageFileTest(DjangoThumborTestCase):
         from django_thumborstorage import storages
         from django.conf import settings
         filename = 'people/HannibalSmith.jpg'
-        content = ContentFile(open('%s/HannibalSmith.jpg' % IMAGE_DIR))
+        content = ContentFile(open('%s/HannibalSmith.jpg' % IMAGE_DIR, "rb").read())
         thumbor_file = storages.ThumborStorageFile(filename, mode="w")
         thumbor_file.write(content=content)
         self.MockPostClass.assert_called_with("%s/image" % settings.THUMBOR_RW_SERVER,
@@ -128,7 +128,7 @@ class ThumborStorageFileTest(DjangoThumborTestCase):
         from django_thumborstorage import storages
         from django.conf import settings
         filename = 'foundations/gnu.png'
-        content = ContentFile(open('%s/gnu.png' % IMAGE_DIR))
+        content = ContentFile(open('%s/gnu.png' % IMAGE_DIR, "rb").read())
         thumbor_file = storages.ThumborStorageFile(filename, mode="w")
         thumbor_file.write(content=content)
         self.MockPostClass.assert_called_with("%s/image" % settings.THUMBOR_RW_SERVER,
@@ -194,7 +194,7 @@ class ThumborStorageTest(DjangoThumborTestCase):
     def test_save(self):
         from django.conf import settings
         filename = 'people/HannibalSmith.jpg'
-        content = ContentFile(open('%s/HannibalSmith.jpg' % IMAGE_DIR))
+        content = ContentFile(open('%s/HannibalSmith.jpg' % IMAGE_DIR, "rb").read())
         response = self.storage.save(filename, content)
         self.MockPostClass.assert_called_with("%s/image" % settings.THUMBOR_RW_SERVER,
                                               data=content.file.read(),
